@@ -1,0 +1,36 @@
+version: '3.12'
+
+services:
+  app:
+    build:
+      context: api
+    env_file:
+      - "api/.env"
+    container_name: fastapi_app
+    restart: "always"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    env_file:
+      - "api/.env"
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./db/:/var/lib/postgresql/data
+
+  postgres_test:
+    container_name: postgres_test
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: test_restaurant_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./db_test/:/var/lib/postgresql/data
